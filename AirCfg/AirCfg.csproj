@@ -11,6 +11,7 @@
     <PackageProjectUrl>www.aircfg.com</PackageProjectUrl>
     <RepositoryUrl>https://github.com/PirSoftware/AirCfg</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
+    <UserSecretsId>9dbef388-75da-4a34-bab9-c8be0a669299</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

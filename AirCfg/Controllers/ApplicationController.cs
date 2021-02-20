@@ -31,7 +31,7 @@ namespace Ist.Pir.AirCfg.Controllers
             model.Data = _encryption.DecryptString(model.EncryptedData, model.Key);
             if (model.Data.StartsWith(startString))
             {
-                model.Data = model.Data.Substring(startString.Length);
+                model.Data = model.Data.Substring(startString.Length).Replace("\0","");
                 model.IsSolved = true;
             }
             else
@@ -136,7 +136,7 @@ namespace Ist.Pir.AirCfg.Controllers
                     model.CreateTime = recordModel.CreateTime;
                     model.Data = recordModel.Data;
                     model.EncryptedData = recordModel.Data;
-                    model.Id = recordModel.Id.ToString();
+                    model.Id = id;
                     model.IsNew = false;
                     model.LastRequest = recordModel.LastRequest;
                     model.UpdateTime = recordModel.UpdateTime;
@@ -145,7 +145,7 @@ namespace Ist.Pir.AirCfg.Controllers
             if (model == null)
             {
                 model = new EntityViewModel();
-                model.Id = ObjectId.NewObjectId().ToString();
+                model.Id = id;
                 model.IsNew = true;
             }
 

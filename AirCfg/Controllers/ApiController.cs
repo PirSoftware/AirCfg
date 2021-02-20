@@ -10,7 +10,7 @@ using System.IO;
 
 namespace Ist.Pir.AirCfg.Controllers
 {
-    [Route("api/[controller]")]
+    
     [ApiController]
     public class ApiController : ControllerBase
     {
@@ -31,7 +31,7 @@ namespace Ist.Pir.AirCfg.Controllers
         }
 
         // POST api/<ApiController>
-        [HttpPost]
+        [HttpPost("api")]
         public string Post([FromBody] SearchModel value)
         {
             using (var db = new LiteDatabase(location))
@@ -55,7 +55,7 @@ namespace Ist.Pir.AirCfg.Controllers
                     }
                     recordModel.LastRequest = DateTime.Now;
                     records.Update(recordModel);
-                    return data;
+                    return data.Substring(startString.Length).Replace("\0", "");
                 }
                 else
                 {
