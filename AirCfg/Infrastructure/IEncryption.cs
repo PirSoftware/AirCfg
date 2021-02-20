@@ -1,21 +1,31 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Ist.Pir.AirCfg.Infrastructure
 {
     public interface IEncryption
     {
+        #region Public Methods
+
         string DecryptString(string encryptedText, string key);
+
         string EncryptString(string plainText, string key);
+
+        #endregion Public Methods
     }
-    public class Encryption: IEncryption
+
+    public class Encryption : IEncryption
     {
+        #region Private Fields
+
         private string iv = @"s8df5w86h5e2vj6e";
+
+        #endregion Private Fields
+
+        #region Public Methods
+
         public string DecryptString(string encryptedText, string key)
         {
             if (key.Length > 32)
@@ -47,7 +57,6 @@ namespace Ist.Pir.AirCfg.Infrastructure
 
         public string EncryptString(string plainText, string key)
         {
-
             if (key.Length > 32)
                 key = key.Substring(32);
             else if (key.Length < 32)
@@ -78,5 +87,6 @@ namespace Ist.Pir.AirCfg.Infrastructure
             return Convert.ToBase64String(cipherBytes, 0, cipherBytes.Length);
         }
 
+        #endregion Public Methods
     }
 }
