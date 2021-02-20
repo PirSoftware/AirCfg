@@ -5,8 +5,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.IO;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace Ist.Pir.AirCfg.Controllers
 {
@@ -14,17 +12,20 @@ namespace Ist.Pir.AirCfg.Controllers
     {
         #region Private Fields
 
-        private readonly string startString = "_airCfg_Pirsoft_";
-        private readonly string location ="";
         private readonly IEncryption _encryption;
+        private readonly string location = "";
+        private readonly string startString = "_airCfg_Pirsoft_";
+
         #endregion Private Fields
 
         #region Public Methods
+
         public ApplicationController(IWebHostEnvironment env, IEncryption encryption)
         {
             _encryption = encryption;
-            location = "Filename="+ Path.Combine(env.WebRootPath, "data", "data.db") + ";connection=shared";
+            location = "Filename=" + Path.Combine(env.WebRootPath, "data", "data.db") + ";connection=shared";
         }
+
         public IActionResult Decode([FromBody] EntityViewModel model)
         {
             model.Data = _encryption.DecryptString(model.EncryptedData, model.Key);
@@ -43,7 +44,6 @@ namespace Ist.Pir.AirCfg.Controllers
             model.IsError = false;
             model.Data = startString + model.Data;
 
-
             if (!model.IsNew && !model.IsSolved)
             {
                 model.Message = "Before Password Resolved";
@@ -61,12 +61,10 @@ namespace Ist.Pir.AirCfg.Controllers
                     }
                     catch
                     {
-
                     }
 
                     if (recordModel != null)
                     {
-
                         var data = _encryption.DecryptString(recordModel.Data, model.OldKey);
                         if (!data.StartsWith(startString))
                         {
@@ -104,6 +102,7 @@ namespace Ist.Pir.AirCfg.Controllers
             EntityViewModel model = new EntityViewModel();
             return View(model);
         }
+
         [HttpGet("Application/{id}")]
         public IActionResult Index(string id)
         {
@@ -117,8 +116,6 @@ namespace Ist.Pir.AirCfg.Controllers
                 objId = ObjectId.NewObjectId();
                 return Redirect("/Application/" + objId.ToString());
             }
-
-
 
             EntityViewModel model = null;
             using (var db = new LiteDatabase(location))
@@ -155,7 +152,6 @@ namespace Ist.Pir.AirCfg.Controllers
             return View(model);
         }
 
- 
         #endregion Public Methods
     }
 }

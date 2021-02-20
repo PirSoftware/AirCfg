@@ -4,10 +4,7 @@ using LiteDB;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -19,13 +16,14 @@ namespace Ist.Pir.AirCfg.Controllers
     {
         #region Private Fields
 
+        private readonly IEncryption _encryption;
         private readonly string location = "";
         private readonly string startString = "_airCfg_Pirsoft_";
-        private readonly IEncryption _encryption;
 
         #endregion Private Fields
 
         #region Public Methods
+
         public ApiController(IWebHostEnvironment env, IEncryption encryption)
         {
             _encryption = encryption;
@@ -46,7 +44,6 @@ namespace Ist.Pir.AirCfg.Controllers
                 }
                 catch
                 {
-
                 }
 
                 if (recordModel != null)
@@ -67,6 +64,6 @@ namespace Ist.Pir.AirCfg.Controllers
             }
         }
     }
-    #endregion
-}
 
+    #endregion Public Methods
+}
