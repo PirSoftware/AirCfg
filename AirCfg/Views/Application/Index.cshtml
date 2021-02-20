@@ -73,7 +73,8 @@
                 oldKey: '',
                 textdata: '@Html.Raw(Model.Data)',
                 encryptedData: '@Html.Raw(Model.EncryptedData)',
-                isSolved: false
+                isSolved: false,
+                isNew: @(Model.IsNew ?"true":"false") ,
             },
             methods: {
                 genereKey: function (event) {
@@ -94,7 +95,7 @@
                 },
                 saveData: function (event) {
                     debugger;
-                    if (!this.IsNew && !this.isSolved) {
+                    if (!this.isNew && !this.isSolved) {
                         alert('Please Solved Data')
                     } else {
 
