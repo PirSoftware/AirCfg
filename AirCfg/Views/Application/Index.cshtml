@@ -1,0 +1,153 @@
+﻿@model Ist.Pir.AirCfg.Models.EntityViewModel
+@{
+
+
+}
+
+<!-- ***** Features Big Item Start ***** -->
+<section class="section" id="about">
+    <div class="container">
+        <div class="row">
+
+            <div class="right-text col-lg-12 col-md-12 col-sm-12 mobile-top-fix">
+                <div class="left-heading">
+                    <h5>Application</h5>
+                </div>
+                <div class="left-text" id="aircfg">
+                    @using (Html.BeginForm(FormMethod.Post))
+                    {
+                    <div class="input-group mb-3">
+                        @if (Model.Id == null)
+                        {
+                            @Html.TextBoxFor(x => x.Id, "", new { @class = "form-control", placeholder = "Please Entery Id Or Genere New Id", v_model = "id"})
+
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-secondary" v-on:click="getId">Get Or Genere New Id</button>
+                            </div>
+                        }
+                        else
+                        {
+                            @Html.TextBoxFor(x => x.Id, "", new { @class = "form-control", placeholder = "Please Entery Id Or Genere New Id", v_model = "id", disabled = true })
+                        }
+                    </div>
+                        @if (Model.Id != null)
+                        {
+
+                <div class="form-group mb-3">
+                    @Html.TextAreaFor(x => x.Data, new { @class = "form-control", placeholder = "Please Entery Json Config", rows = 13, v_model = "textdata" })
+                </div>
+                            @if (!Model.IsNew)
+                            {
+                <div class="input-group  mb-3">
+
+                    @Html.TextBoxFor(x => x.OldKey, "", new { @class = "form-control", placeholder = "Please Entery Key", aria_describedby = "basic-addon2", v_model = "oldKey" })
+                    <div class="input-group-append">
+                        <button type="button" class="btn btn-primary" v-on:click="decodeData">Decode Data</button>
+                        
+                    </div>
+                </div>
+                            }
+                            <div class="input-group  mb-3">
+                              
+                                @Html.TextBoxFor(x => x.Key, "", new { @class = "form-control", placeholder = "Please Entery Key", aria_describedby = "basic-addon2", v_model = "key" })
+                                <div class="input-group-append"> 
+                                    <button type="button" class="btn btn-primary" v-on:click="genereKey">Genere Password</button>
+                                    <button type="button" class="btn btn-primary" v-on:click="saveData">Encode And Save</button>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- ***** Features Big Item End ***** -->
+@section Scripts{ 
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js" integrity="sha512-bZS47S7sPOxkjU/4Bt0zrhEtWx0y0CRkhEp8IckzK+ltifIIE9EMIMTuT/mEzoIMewUINruDBIR/jJnbguonqQ==" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+        new Vue({
+            el: '#aircfg',
+            data: {
+                id: '@Model.Id',
+                key: '',
+                oldKey: '',
+                textdata: '@Html.Raw(Model.Data)',
+                encryptedData: '@Html.Raw(Model.EncryptedData)',
+                isSolved: false 
+            },
+            methods: {
+                genereKey: function (event) {
+                    var result = '';
+                    var length = 32;
+                    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+                    var charactersLength = characters.length;
+                    for (var i = 0; i < length; i++) {
+                        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+                    }
+                    this.key = result;
+                },
+                getId: function (event) {
+                    if (!this.id)
+                        this.id = "new";
+
+                    window.location.href = '/@(Context.Request.RouteValues["controller"])/' +this.id;
+                },
+                saveData: function (event) {
+                    debugger;
+                    if (!this.IsNew && !this.isSolved) {
+                        alert('Please Solved Data')
+                    } else {
+
+                        axios.post('/@(Context.Request.RouteValues["controller"])/EncodeAndSave', {
+                            Data: this.textdata,
+                            Id: this.id,
+                            Key: this.key,
+                            OldKey: this.oldKey,
+                            IsNew: @(Model.IsNew ?"true":"false") ,
+                            IsSolved: this.isSolved
+                        }).then(function (response) {
+                            if (response.data.isError) {
+                                alert("Error : " + response.data.message);
+                                return;
+                            }
+                            alert("Save Successful!");
+                        })
+                            .catch(function (error) {
+                                alert("Save Successful!");
+                            });
+                    }
+                },
+                decodeData: function (event) {
+                    var self = this;
+
+                    axios.post('/@(Context.Request.RouteValues["controller"])/Decode',  {
+                        Data: this.textdata,
+                        EncryptedData: this.encryptedData,
+                        Key: this.oldKey,
+                        IsNew: @(Model.IsNew ?"true":"false") ,
+                        IsSolved: this.isSolved
+                    }).then(function (response) {
+                            if (response.data.isError) {
+                                alert("Error : " + response.data.message);
+                                return;
+                            }
+                            self.isSolved = response.data.isSolved;
+                            self.textdata = response.data.data;
+                            if (!response.data.isSolved)
+                            {
+                                alert("Solved Error!!!");
+                            }
+                        })
+                        .catch(function (error) {
+                            alert("Save Error!")
+                        });
+                }
+            }
+        })
+
+    </script>
+
+
+}
